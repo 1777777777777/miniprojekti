@@ -10,7 +10,7 @@ Esimerkki product ja sprint backlogeista sekä ohje niiden tekemiseen GitHub Pro
 
 Oletuksena on, että
 
-- olet jo kirjautunut `oc`-komentorivityökalulla oikeaan OKD-klusteriin ja oikeaan projektiin (`oc project <namespace>`).
+- olet jo kirjautunut `oc`-komentorivityökalulla oikeaan OKD-klusteriin ja oikeaan projektiin (`oc project <namespace>`). Ohje tähän [täällä](OKD.md).
 - projekti on pushattu onnistuneesti GitHubiin ja siitä on muodostunut Docker-kuva, joka on julkinen. Varmista tämä GitHubista, repositorion Packages-välilehdeltä (Package settings → Change visibility → Public):
 
 ![](misc/package.png)
