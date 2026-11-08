@@ -1,5 +1,7 @@
 ## Sovelluksen vieminen OKD-klusterille
 
+Deployaus tarvitsee tehdä vain kerran koko ryhmän puolesta, eli riittää että yksi ryhmäläinen tekee sen. Suosittelemme kuitenkin, että asiasta on vastuussa kaksi ryhmäläistä, jotta osaaminen ei ole vain yhden henkilön varassa.
+
 ### Lähtötilanne
 
 Oletuksena on, että

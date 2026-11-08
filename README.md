@@ -8,4 +8,4 @@ Esimerkki product ja sprint backlogeista sekä ohje niiden tekemiseen GitHub Pro
 
 ### Sovelluksen vieminen OKD-klusterille
 
-Ohje sovelluksen viemiseen yliopiston OKD-klusterille sekä selitys sen automaattisesta päivittymisestä [täällä](DEPLOYMENT.md).
+Ohje sovelluksen viemiseen yliopiston OKD-klusterille [täällä](DEPLOYMENT.md). Ohjeessa kerrotaan myös, miten klusterilla oleva versio päivittyy automaattisesti ja milloin päivitys on tehtävä itse.
