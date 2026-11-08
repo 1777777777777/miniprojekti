@@ -15,7 +15,7 @@ Oletuksena on, että
 
 Ennen ensimmäistä klusterillevientiä eli deployausta muokkaa tiedostoon `kustomization.yaml` seuraavat kohdat omaan projektiin sopiviksi:
 
-- `namespace` — OKD-projekti, johon sovellus deployataan.
+- `namespace` — OKD-projekti, johon sovellus deployataan. Projektin nimi löytyy kurssin palautussovelluksesta, ks. [OKD-ohje](OKD.md#4-valitse-projekti).
 - `images.newName` — oman Docker-imagen osoite, johon GitHub Actions -workflow pushaa buildatun imagen. GitHub action luo repositorin nimen automaattisesti, joten osoite on muotoa `ghcr.io/<käyttäjätunnus>/<repo-nimi>`.
 - `patches`-kohdan Route-patchin `value` — sovelluksen julkinen osoite. Tämän tulee olla uniikki koko klusterilla, ja muotoa `route-<projekti>.ext.okd-cs-test-0.k8s.cs.helsinki.fi`.
 
@@ -37,13 +37,7 @@ oc apply -k .
 
 Komento luo/päivittää kaikki `kustomization.yaml`-tiedostossa määritellyt Kubernetes-resurssit OKD-klusterille.
 
-Kun sovellus on käynnistynyt (tilanteen näkee komennolla `oc get pods`), luo tietokannan taulut klusterille:
-
-```sh
-oc exec deploy/dep -- python src/db_helper.py
-```
-
-Komento suorittaa sovelluksen kontissa saman tietokannan alustuksen, jonka teet paikallisesti komennolla `uv run python src/db_helper.py`.
+Kun sovellus on käynnistynyt (tilanteen näkee komennolla `oc get pods`), luo vielä tietokannan taulut klusterille ohjeen [Tietokanta klusterilla](#tietokanta-klusterilla) mukaan.
 
 Jos kaikki menee hyvin, käynnistyy sovellus osoitteeseen https://route-<projekti>.ext.okd-cs-test-0.k8s.cs.helsinki.fi
 
@@ -76,10 +70,29 @@ Automaattinen päivitys koskee ainoastaan sovelluksen koodia, eli Docker-kuvaa. 
 
 Muutokset näihin tiedostoihin eivät siis päivity klusterille pelkällä GitHubiin pushaamisella.
 
-Tietokanta sijaitsee klusterilla omalla levyllään, eikä se muutu sovelluksen päivittyessä. Jos tietokannan rakennetta (eli tiedostoa [src/schema.sql](src/schema.sql)) muutetaan, tulee tietokanta alustaa klusterilla uudelleen samalla komennolla kuin ensimmäisellä kerralla, kun sovelluksen uusi versio on käynnistynyt:
+Myöskään klusterin tietokanta ei päivity automaattisesti, ks. [Tietokanta klusterilla](#tietokanta-klusterilla).
+
+### Tietokanta klusterilla
+
+Sovelluksen SQLite-tietokanta sijaitsee klusterilla omalla pysyvällä levyllään ([volumeclaim.yaml](manifests/volumeclaim.yaml)). Tietokanta säilyy, kun sovellus päivittyy tai käynnistyy uudelleen, mutta automaattinen päivitys ei koske sitä: vaikka tiedostoa [src/schema.sql](src/schema.sql) muutettaisiin, klusterin tietokannan taulut pysyvät ennallaan.
+
+Tietokanta on siis alustettava klusterilla itse
+
+- ensimmäisen deployauksen jälkeen
+- aina kun tietokannan rakennetta (eli tiedostoa `src/schema.sql`) on muutettu ja muutoksen sisältävä versio on päivittynyt klusterille
+
+Alustus tehdään komennolla:
 
 ```sh
 oc exec deploy/dep -- python src/db_helper.py
 ```
 
-Huomaa, että komento tyhjentää tietokannan.
+Komento suorittaa sovelluksen kontissa saman alustuksen, jonka teet paikallisesti komennolla `uv run python src/db_helper.py`. Se pudottaa olemassa olevat taulut ja luo ne uudelleen, eli **kaikki klusterin tietokannassa oleva data häviää**.
+
+Suorita komento vasta, kun uusi versio on käynnissä. Tämän voi varmistaa komennolla:
+
+```sh
+oc rollout status deploy/dep
+```
+
+Jos sovellus alkaa tietokantamuutoksen jälkeen antaa klusterilla virheitä, syy on todennäköisesti se, että tietokantaa ei ole alustettu uudelleen.

@@ -28,12 +28,18 @@ Suorita komento terminaalissa. Token vanhenee ajan myötä, jolloin kirjautumine
 
 ### 4. Valitse projekti
 
-Ryhmällesi on luotu valmiiksi oma projekti (namespace). Näet projektisi ja valitset sen komennoilla:
+Ryhmällesi on luotu valmiiksi oma projekti (namespace). Projektin nimi löytyy kurssin palautussovelluksesta, miniproject-välilehden kohdasta _OKD project_:
+
+![](misc/projekti.png)
+
+Näet projektisi ja valitset sen komennoilla:
 
 ```sh
 oc projects
 oc project <namespace>
 ```
+
+Esim. yllä olevan kuvan ryhmä valitsee projektinsa komennolla `oc project ohjelmistotuotanto-lahiopetus-2026-20`.
 
 Varmista lopuksi, että kaikki on kunnossa:
 
