@@ -28,7 +28,7 @@ Suorita komento terminaalissa. Token vanhenee ajan myötä, jolloin kirjautumine
 
 ### 4. Valitse projekti
 
-Ryhmällesi on luotu valmiiksi oma projekti (namespace). Projektin nimi löytyy kurssin palautussovelluksesta, miniproject-välilehden kohdasta _OKD-projekti_:
+Ryhmällesi on luotu valmiiksi oma projekti (namespace). Projektin nimi löytyy kurssin palautussovelluksesta, miniproject-välilehden kohdasta _OKD-projekti_. Projekti näkyy sivulla yleensä vasta miniprojektin luomista seuraavana päivänä.
 
 ![](misc/projekti.png)
 
