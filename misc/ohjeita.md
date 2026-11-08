@@ -1,4 +1,4 @@
-## Muutamia viheitä projektin alkuun
+## Muutamia vihjeitä projektin alkuun
 
 Ihmisten välinen yhteistyö on suurin haaste ohjelmistojen kehittämiseen, ja erityisen haastavaa se on projektin alussa. Seuraavassa muutama vihje/checklist projektin käynnistämiseen.
 
@@ -29,4 +29,12 @@ Ihmisten välinen yhteistyö on suurin haaste ohjelmistojen kehittämiseen, ja e
   - aja komento `uv run python src/db_helper.py`, joka luo tietokantaan [src/schema.sql](../src/schema.sql):ssa määritellyt taulut
     - komento voidaan ajaa uudelleen aina kun taulujen rakennetta muutetaan, sillä se pudottaa olemassa olevat taulut ennen uusien luomista
   - tietokantatiedostoa (esim. `database.db`) ei lisätä versionhallintaan
+  - vastuulliseksi voi valita esim. kaksi ryhmäläistä
+- [ ] Vie sovellus OKD-klusterille
+  - sovelluksen tulee toimia yliopiston OKD-klusterilla jo ensimmäisen sprintin lopussa (riittää, että boilerplate tai sprintin ensimmäinen story toimii siellä)
+  - asentakaa `oc`-komentorivityökalu ja kirjautukaa klusteriin [tämän ohjeen](../OKD.md) mukaan. Klusteri näkyy vain yliopiston verkosta, eli Eduroamista tai HY:n VPN:n kautta
+  - tehkää sovelluksen Docker-kuvasta julkinen ja muokatkaa `kustomization.yaml` omaan projektiinne sopivaksi ja luokaa tietokannan taulut klusterille [deployausohjeen](../DEPLOYMENT.md) mukaan
+  - kun sovellus on kerran viety klusterille, sen versio päivittyy automaattisesti aina kun main-haaraan pushattu koodi läpäisee GitHub Actionsin testit
+  - komento `oc apply -k .` on kuitenkin suoritettava itse, jos tiedostoa `kustomization.yaml`, hakemiston `manifests` tiedostoja tai tiedostoa `secret.env` muutetaan, ks. [Milloin deployaus tulee tehdä itse?](../DEPLOYMENT.md#milloin-deployaus-tulee-tehdä-itse)
+  - lisätkää linkki klusterilla toimivaan sovellukseen README:hen
   - vastuulliseksi voi valita esim. kaksi ryhmäläistä
