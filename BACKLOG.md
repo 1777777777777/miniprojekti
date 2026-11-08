@@ -1,6 +1,6 @@
 ## Esimerkki: product ja sprint backlog GitHub Projectsilla
 
-Tähän repositorioon on tehty esimerkkinä backlogit boilerplaten todo-sovellukselle sellaisina kuin ne voisivat olla kesken sprinttiä 2. Katso esimerkistä mallia oman ryhmäsi backlogeihin. Miniprojektin vaatimukset backlogeille löytyvät [arvosteluperusteista](https://ohjelmistotuotanto-hy.github.io/miniprojektin_arvosteluperusteet). Esimerkin backlogit ja niiden yhteys kurssin teoriaan esitellään myös kurssimateriaalin osassa 2: [Esimerkki: backlogit GitHub Projectsilla](https://studies.cs.helsinki.fi/ohtu/osa2/#esimerkki-backlogit-github-projectsilla).
+Tähän repositorioon on tehty esimerkkinä backlogit boilerplaten todo-sovellukselle sellaisina kuin ne voisivat olla kesken sprinttiä 2. Katso esimerkistä mallia oman ryhmäsi backlogeihin. Miniprojektin vaatimukset backlogeille löytyvät [arvosteluperusteista](https://studies.cs.helsinki.fi/ohtu/miniprojektin_arvosteluperusteet). Esimerkin backlogit ja niiden yhteys kurssin teoriaan esitellään myös kurssimateriaalin osassa 2: [Esimerkki: backlogit GitHub Projectsilla](https://studies.cs.helsinki.fi/ohtu/osa2/#esimerkki-backlogit-github-projectsilla).
 
 ### Linkit
 
