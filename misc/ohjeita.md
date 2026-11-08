@@ -4,6 +4,12 @@ Ihmisten välinen yhteistyö on suurin haaste ohjelmistojen kehittämiseen, ja e
 
 - [ ] tehkää esittäytymiskierros
 - [ ] luokaa jokin yhteinen kommunikaatiokanava, esim. Discordiin, Telegramiin, yms
+> [!NOTE]
+> Tutkimukseen osallistuvat:
+> - [ ]  kommunikaatiokanava Discord
+> - [ ] Luo uusi serveri miniprojektia varten
+> - [ ] Lisää [study-helper-bot](https://discord.com/oauth2/authorize?client_id=1568902809498423358&permissions=66560&integration_type=0&scope=bot+applications.commands) serverille
+> - [ ] Botilla on komento `/status`, tarkista sen avulla että botti on toiminnassa
 - [ ] jokainen liittyy kanavalle
 - [ ] sopikaa yhteisistä työskentelyajoista
   - mahdollisimman monta tuntia viikossa
