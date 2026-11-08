@@ -70,7 +70,7 @@ Automaattinen päivitys koskee ainoastaan sovelluksen koodia, eli Docker-kuvaa. 
 
 Muutokset näihin tiedostoihin eivät siis päivity klusterille pelkällä GitHubiin pushaamisella.
 
-Myöskään klusterin tietokanta ei päivity automaattisesti, ks. [Tietokanta klusterilla](#tietokanta-klusterilla).
+Myöskään **klusterin tietokanta ei päivity automaattisesti**, ks. [Tietokanta klusterilla](#tietokanta-klusterilla).
 
 ### Tietokanta klusterilla
 
