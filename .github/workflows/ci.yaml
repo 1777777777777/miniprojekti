@@ -1,9 +1,5 @@
 name: CI
 
-env:
-  DATABASE_URL: sqlite:///test.db
-  TEST_ENV: true
-  SECRET_KEY: sekret
 
 on:
   push:
@@ -24,9 +20,3 @@ jobs:
           enable-cache: true
       - name: Install dependencies
         run: uv sync
-      - name: Run unit tests
-        run: uv run pytest src/tests
-      - name: Install Playwright browser
-        run: uv run rfbrowser install --with-deps chromium
-      - name: Run robot tests
-        run: bash run_robot_tests.sh

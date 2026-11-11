@@ -2,11 +2,6 @@ from config import db, app
 from sqlalchemy import text
 import os
 
-def reset_db():
-  print(f"Clearing contents from table todos")
-  sql = text(f"DELETE FROM todos")
-  db.session.execute(sql)
-  db.session.commit()
 
 def tables():
   """Returns all table names from the database"""
@@ -38,6 +33,9 @@ def setup_db():
   with open(schema_path, 'r') as f:
     schema_sql = f.read().strip()
   
+  if not schema_sql:
+    return
+
   sql = text(schema_sql)
   db.session.execute(sql)
   db.session.commit()

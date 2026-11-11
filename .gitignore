@@ -9,6 +9,5 @@ output.xml
 report.html
 *.png
 !misc/*.png
-possu.sh
 secret.env
 playwright-log.txt
