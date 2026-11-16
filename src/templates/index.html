@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>References</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script defer src="{{ url_for('static', filename='resize-panel.js') }}"></script>
+</head>
+<body>
+    <div class="main-area">
+        <aside class="folder-panel" id="folders" aria-labelledby="folder-title">
+            <h2 class="folder-header" id="folder-title">Folders</h2>
+            <div class="folder-list">
+                <div class="folder-row"><span aria-hidden="true">📁</span> My refs</div>
+            </div>
+        </aside>
+        <div class="resizer" role="separator" tabindex="0" aria-label="Resize Folders panel"
+             aria-controls="folders" aria-orientation="vertical" aria-valuemin="160"
+             aria-valuemax="480" aria-valuenow="240"></div>
+        <main class="references-panel">
+            <header class="references-header">
+                <h1>{{ references | length }} {{ 'reference' if references | length == 1 else 'references' }}</h1>
+                <a class="add-reference" href="{{ url_for('new_reference') }}">+ Add reference</a>
+            </header>
+            {% if references %}
+            <ul class="reference-list">
+                {% for reference in references %}
+                <li class="reference">
+                    <div class="reference-header">
+                        <span class="reference-type">BOOK</span>
+                        <h2>{{ reference.title }}</h2>
+                        <code class="citation-key" aria-label="Citation key">\cite{ {{- reference.key -}} }</code>
+                    </div>
+                    <dl class="metadata">
+                        <div><dt>Author</dt><dd>{{ reference.author }}</dd></div>
+                        <div><dt>Year</dt><dd>{{ reference.year }}</dd></div>
+                        <div><dt>Publisher</dt><dd>{{ reference.publisher }}</dd></div>
+                        {% if reference.pages %}
+                        <div><dt>Pages</dt><dd>{{ reference.pages }}</dd></div>
+                        {% endif %}
+                    </dl>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="empty-message">No references yet.</p>
+            {% endif %}
+        </main>
+    </div>
+</body>
+</html>
