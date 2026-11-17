@@ -1,9 +1,10 @@
 from os import getenv
+
 from flask import jsonify, render_template
+from sqlalchemy import text
 
 from config import app, db
 from db_helper import reset_db, seed_db
-from sqlalchemy import text
 
 
 @app.get("/")

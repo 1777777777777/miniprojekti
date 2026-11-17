@@ -24,6 +24,8 @@ jobs:
           enable-cache: true
       - name: Install dependencies
         run: uv sync
+      - name: Run Pylint
+        run: uv run pylint src
       - name: Install Playwright browser
         run: uv run rfbrowser install --with-deps chromium
       - name: Run robot tests
