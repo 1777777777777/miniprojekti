@@ -13,6 +13,14 @@ def tables():
   result = db.session.execute(sql)
   return [row[0] for row in result.fetchall()]
 
+
+def reset_db():
+    """Clears all rows from the book_references table."""
+    print("Clearing contents from table book_references")
+    db.session.execute(text("DELETE FROM book_references"))
+    db.session.commit()
+
+
 def setup_db():
     """
     Creates the database tables defined in schema.sql.
@@ -30,7 +38,9 @@ def setup_db():
     db.session.execute(sql)
     db.session.commit()
 
-    # Insert example reference if the table is empty
+
+def seed_db():
+    """Inserts example references if the book_references table is empty."""
     result = db.session.execute(
         text("SELECT COUNT(*) FROM book_references")
     )
