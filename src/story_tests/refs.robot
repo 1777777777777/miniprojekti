@@ -26,3 +26,17 @@ Book references that are in database are also displayed
     Get Text  body  *=  \\cite{Fowler99}
     Get Text  body  *=  \\cite{Thomas19}
 
+
+User can add a new book reference
+    Go To  http://${SERVER}/references/new
+    Fill Text  input[name="key"]  Knuth97
+    Fill Text  input[name="author"]  Donald E. Knuth
+    Fill Text  input[name="title"]  The Art of Computer Programming
+    Fill Text  input[name="year"]  1997
+    Fill Text  input[name="publisher"]  Addison-Wesley
+    Fill Text  input[name="pages"]  1-10
+    Click  button[type="submit"]
+    Get Text  h1  ==  1 reference
+    Get Text  body  *=  \\cite{Knuth97}
+    Get Text  body  *=  The Art of Computer Programming
+
