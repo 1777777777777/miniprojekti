@@ -108,12 +108,35 @@ body {
 }
 
 .reference {
+    position: relative;
     padding: 4px 6px;
     border-radius: 3px;
 }
 
 .reference:hover {
     background: #252525;
+}
+
+.edit-reference {
+    position: absolute;
+    right: 12px;
+    bottom: 4px;
+    color: #5c5c5c;
+    font-family: Consolas, monospace;
+    font-size: 9px;
+    text-decoration: none;
+    opacity: 0;
+}
+
+.reference:hover .edit-reference,
+.reference:focus-within .edit-reference {
+    opacity: 1;
+}
+
+.edit-reference:hover,
+.edit-reference:focus-visible {
+    color: #e8ecf0;
+    text-decoration: underline;
 }
 
 .reference-header {

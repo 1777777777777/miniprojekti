@@ -40,6 +40,7 @@
                         <div><dt>Pages</dt><dd>{{ reference.pages }}</dd></div>
                         {% endif %}
                     </dl>
+                    <a class="edit-reference" href="{{ url_for('edit_reference', ref_type='book', ref_id=reference.id) }}">Edit</a>
                 </li>
                 {% endfor %}
             </ul>
