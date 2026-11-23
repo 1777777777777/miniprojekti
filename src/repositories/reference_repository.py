@@ -22,3 +22,17 @@ def get_reference(ref_type, ref_id):
         return None
 
     return dict(row)
+
+
+def update_reference(ref_type, ref_id, data):
+    if ref_type not in REFERENCE_TABLES:
+        return False
+
+    table = REFERENCE_TABLES[ref_type]
+    columns = ", ".join(f"{key} = :{key}" for key in data)
+
+    sql = text(f"UPDATE {table} SET {columns} WHERE id = :id")
+    result = db.session.execute(sql, {**data, "id": ref_id})
+    db.session.commit()
+
+    return result.rowcount > 0
