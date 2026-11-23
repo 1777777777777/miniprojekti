@@ -40,3 +40,19 @@ User can add a new book reference
     Get Text  body  *=  \\cite{Knuth97}
     Get Text  body  *=  The Art of Computer Programming
 
+
+User can edit a reference
+    Go To  http://${SERVER}/seed_db
+    Go To  ${HOME_URL}
+    Hover  .reference >> nth=0
+    Click  .edit-reference >> nth=0
+    Get Text  h1  ==  Edit book reference
+    Get Property  input[name="key"]  value  ==  Martin08
+    Fill Text  input[name="title"]  Clean Code (2nd Edition)
+    Fill Text  input[name="year"]  2009
+    Click  button[type="submit"]
+    Get Text  h1  ==  4 references
+    Get Text  body  *=  Clean Code (2nd Edition)
+    Get Text  body  *=  2009
+
+
