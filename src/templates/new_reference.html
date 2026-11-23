@@ -7,9 +7,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="form-page">
-    <main class="book-form-panel">
+    <main class="reference-form-panel">
         <h1>Add book reference</h1>
-        <form class="book-form" method="post" action="{{ url_for('new_reference') }}">
+        <form class="reference-form" method="post" action="{{ url_for('new_reference') }}">
             <label for="key">Citation key</label>
             <input id="key" name="key" value="{{ filled.get('key', '') }}" required>
 

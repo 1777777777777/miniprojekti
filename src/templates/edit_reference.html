@@ -3,30 +3,39 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Edit book reference</title>
+    <title>Edit {{ ref_type }} reference</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="form-page">
-    <main class="book-form-panel">
-        <h1>Edit book reference</h1>
-        <form class="book-form" method="post">
-            <label for="key">Citation key</label>
-            <input id="key" name="key" value="{{ filled.get('key', '') }}" required>
+    <main class="reference-form-panel">
+        <h1>Edit {{ ref_type }} reference</h1>
+        <form class="reference-form" method="post">
+            {% if ref_type == "book" %}
+                <label for="key">Citation key</label>
+                <input id="key" name="key" value="{{ filled.get('key', '') }}" required>
 
-            <label for="author">Author</label>
-            <input id="author" name="author" value="{{ filled.get('author', '') }}" required>
+                <label for="author">Author</label>
+                <input id="author" name="author" value="{{ filled.get('author', '') }}" required>
 
-            <label for="title">Book title</label>
-            <input id="title" name="title" value="{{ filled.get('title', '') }}" required>
+                <label for="title">Book title</label>
+                <input id="title" name="title" value="{{ filled.get('title', '') }}" required>
 
-            <label for="year">Publication year</label>
-            <input id="year" name="year" type="number" step="1" min="1" value="{{ filled.get('year', '') }}" required>
+                <label for="year">Publication year</label>
+                <input id="year" name="year" type="number" step="1" min="1" value="{{ filled.get('year', '') }}" required>
 
-            <label for="publisher">Publisher</label>
-            <input id="publisher" name="publisher" value="{{ filled.get('publisher', '') }}" required>
+                <label for="publisher">Publisher</label>
+                <input id="publisher" name="publisher" value="{{ filled.get('publisher', '') }}" required>
 
-            <label for="pages">Pages (optional)</label>
-            <input id="pages" name="pages" value="{{ filled.get('pages', '') }}" placeholder="42 or 42–48">
+                <label for="pages">Pages (optional)</label>
+                <input id="pages" name="pages" value="{{ filled.get('pages', '') }}" placeholder="42 or 42–48">
+
+            {% elif ref_type == "article" %}
+                <!-- Add article form fields here -->
+
+            {% elif ref_type == "inproceedings" %}
+                <!-- Add inproceedings form fields here -->
+
+            {% endif %}
 
             <div class="form-actions">
                 <button type="submit">Save reference</button>

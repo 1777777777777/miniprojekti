@@ -83,12 +83,22 @@ def edit_reference(ref_type, ref_id):
         abort(404)
 
     if request.method == "GET":
-        return render_template("edit_reference.html", error=None, filled=reference)
+        return render_template(
+            "edit_reference.html",
+            ref_type=ref_type,
+            error=None,
+            filled=reference,
+        )
 
     filled = read_reference_form(ref_type)
     error = validate_reference_form(ref_type, filled)
     if error:
-        return render_template("edit_reference.html", error=error, filled=filled), 400
+        return render_template(
+            "edit_reference.html",
+            ref_type=ref_type,
+            error=error,
+            filled=filled,
+        ), 400
 
     try:
         update_reference(ref_type, ref_id, {**filled, "year": int(filled["year"])})
@@ -97,6 +107,7 @@ def edit_reference(ref_type, ref_id):
         db.session.rollback()
         return render_template(
             "edit_reference.html",
+            ref_type=ref_type,
             error="Citation key already exists.",
             filled=filled,
         ), 400

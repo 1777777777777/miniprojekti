@@ -213,22 +213,22 @@ body {
     min-height: 100dvh;
 }
 
-.book-form-panel {
+.reference-form-panel {
     width: min(100%, 36rem);
     padding: 24px;
 }
 
-.book-form-panel h1 {
+.reference-form-panel h1 {
     margin: 0 0 20px;
     font-size: 20px;
 }
 
-.book-form {
+.reference-form {
     display: grid;
     gap: 6px;
 }
 
-.book-form input {
+.reference-form input {
     width: 100%;
     margin-bottom: 8px;
     padding: 8px 10px;
@@ -258,13 +258,13 @@ body {
     transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
 
-.book-form:valid .form-actions button {
+.reference-form:valid .form-actions button {
     border-color: #2b6cb0;
     background: #2b6cb0;
     color: #fff;
 }
 
-.book-form:valid .form-actions button:hover {
+.reference-form:valid .form-actions button:hover {
     border-color: #357abd;
     background: #357abd;
 }
