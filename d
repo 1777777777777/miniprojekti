@@ -1,0 +1,4 @@
+* [32mmain[m
+  [31mremotes/origin/main[m
+  [31mremotes/upstream/HEAD[m -> upstream/main
+  [31mremotes/upstream/main[m

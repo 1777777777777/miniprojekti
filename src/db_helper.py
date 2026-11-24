@@ -17,9 +17,10 @@ def tables():
 
 
 def reset_db():
-    """Clears all rows from the book_references table."""
-    print("Clearing contents from table book_references")
+    """Clears all reference rows from the database."""
+    print("Clearing reference tables")
     db.session.execute(text("DELETE FROM book_references"))
+    db.session.execute(text("DELETE FROM article_references"))
     db.session.commit()
 
 
@@ -36,8 +37,13 @@ def setup_db():
     if not schema_sql:
         return
 
-    sql = text(schema_sql)
-    db.session.execute(sql)
+    # Suoritetaan lauseet erikseen; SQLAlchemyn execute ei yleensä
+    # suorita useita SQL-lauseita yhdellä kutsulla.
+    for statement in schema_sql.split(";"):
+        statement = statement.strip()
+        if statement:
+            db.session.execute(text(statement))
+
     db.session.commit()
 
 

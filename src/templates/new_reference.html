@@ -10,32 +10,75 @@
     <main class="reference-form-panel">
         <h1>Add book reference</h1>
         <form class="reference-form" method="post" action="{{ url_for('new_reference') }}">
-            <label for="key">Citation key</label>
-            <input id="key" name="key" value="{{ filled.get('key', '') }}" required>
+    <label for="reference_type">Reference type</label>
+<select id="reference_type" name="reference_type">
+    <option value="book"
+        {% if filled.get('reference_type', 'book') == 'book' %}selected{% endif %}>
+        Book
+    </option>
+    <option value="article"
+        {% if filled.get('reference_type') == 'article' %}selected{% endif %}>
+        Article
+    </option>
+</select>
 
-            <label for="author">Author</label>
-            <input id="author" name="author" value="{{ filled.get('author', '') }}" required>
+<label for="key">Citation key</label>
+<input id="key" name="key" value="{{ filled.get('key', '') }}" required>
 
-            <label for="title">Book title</label>
-            <input id="title" name="title" value="{{ filled.get('title', '') }}" required>
+<label for="author">Author</label>
+<input id="author" name="author" value="{{ filled.get('author', '') }}" required>
 
-            <label for="year">Publication year</label>
-            <input id="year" name="year" type="number" step="1" min="1" value="{{ filled.get('year', '') }}" required>
+<label for="title">Title</label>
+<input id="title" name="title" value="{{ filled.get('title', '') }}" required>
 
-            <label for="publisher">Publisher</label>
-            <input id="publisher" name="publisher" value="{{ filled.get('publisher', '') }}" required>
+<label for="year">Publication year</label>
+<input id="year" name="year" type="number" step="1" min="1"
+       value="{{ filled.get('year', '') }}" required>
 
-            <label for="pages">Pages (optional)</label>
-            <input id="pages" name="pages" value="{{ filled.get('pages', '') }}" placeholder="42 or 42–48">
+<fieldset id="book-fields">
+    <label for="publisher">Publisher</label>
+    <input id="publisher" name="publisher"
+           value="{{ filled.get('publisher', '') }}" required>
+</fieldset>
 
-            <div class="form-actions">
-                <button type="submit">Save reference</button>
-                <a href="{{ url_for('index') }}">Cancel</a>
-            </div>
-            {% if error %}
-            <p class="form-status">{{ error }}</p>
-            {% endif %}
-        </form>
+<fieldset id="article-fields" hidden disabled>
+    <label for="journal">Journal name</label>
+    <input id="journal" name="journal"
+           value="{{ filled.get('journal', '') }}" required>
+</fieldset>
+
+<label for="pages">Pages (optional)</label>
+<input id="pages" name="pages" value="{{ filled.get('pages', '') }}"
+       placeholder="42 or 42–48">
+
+    <div class="form-actions">
+        <button type="submit">Save reference</button>
+        <a href="{{ url_for('index') }}">Cancel</a>
+    </div>
+
+    {% if error %}
+    <p class="form-status">{{ error }}</p>
+    {% endif %}
+</form>
+
+<script>
+    const typeSelect = document.getElementById("reference_type");
+    const bookFields = document.getElementById("book-fields");
+    const articleFields = document.getElementById("article-fields");
+
+    function updateFields() {
+        const isArticle = typeSelect.value === "article";
+
+        bookFields.hidden = isArticle;
+        bookFields.disabled = isArticle;
+        articleFields.hidden = !isArticle;
+        articleFields.disabled = !isArticle;
+    }
+
+    typeSelect.addEventListener("change", updateFields);
+    updateFields();
+</script>
+
     </main>
 </body>
 </html>

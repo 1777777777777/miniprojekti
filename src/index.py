@@ -5,17 +5,20 @@ from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 
 from config import app, db
-from db_helper import reset_db, seed_db
+from db_helper import reset_db, seed_db, setup_db
 from repositories.reference_repository import get_reference, update_reference
+
 
 REFERENCE_FIELDS = {
     "book": ("key", "author", "title", "year", "publisher", "pages"),
+    "article": ("key", "author", "title", "year", "journal", "pages"),
     # "article": (),
     # "inproceedings": (),
 }
 
 REQUIRED_FIELDS = {
     "book": ("key", "author", "title", "year", "publisher"),
+    "article": ("key", "author", "title", "year", "journal"),
     # "article": (),
     # "inproceedings": (),
 }
@@ -39,7 +42,28 @@ def validate_reference_form(ref_type, filled):
 
 @app.get("/")
 def index():
-    result = db.session.execute(text("SELECT * FROM book_references"))
+    setup_db()
+    
+    result = db.session.execute(text("""
+        SELECT
+            id, key, title, author, year,
+            publisher AS publication,
+            pages,
+            'book' AS ref_type
+        FROM book_references
+
+        UNION ALL
+
+        SELECT
+            id, key, title, author, year,
+            journal AS publication,
+            pages,
+            'article' AS ref_type
+        FROM article_references
+
+        ORDER BY year DESC, title
+    """))
+
     references = result.fetchall()
 
     return render_template("index.html", references=references)
@@ -48,25 +72,58 @@ def index():
 @app.route("/references/new", methods=["GET", "POST"])
 def new_reference():
     if request.method == "GET":
-        return render_template("new_reference.html", error=None, filled={})
+        return render_template(
+            "new_reference.html",
+            error=None,
+            filled={"reference_type": "book"},
+        )
 
-    filled = read_reference_form("book")
-    error = validate_reference_form("book", filled)
+    ref_type = request.form.get("reference_type", "book")
+    filled = request.form.to_dict()
+    filled["reference_type"] = ref_type
+
+    if ref_type not in REFERENCE_FIELDS:
+        return render_template(
+            "new_reference.html",
+            error="Choose a valid reference type.",
+            filled=filled,
+        ), 400
+
+    filled.update(read_reference_form(ref_type))
+    error = validate_reference_form(ref_type, filled)
+
     if error:
-        return render_template("new_reference.html", error=error, filled=filled), 400
+        return render_template(
+            "new_reference.html",
+            error=error,
+            filled=filled,
+        ), 400
 
     try:
-        db.session.execute(
-            text("""
-                INSERT INTO book_references
-                    (key, author, title, year, publisher, pages)
-                VALUES
-                    (:key, :author, :title, :year, :publisher, :pages)
-            """),
-            {**filled, "year": int(filled["year"])},
-        )
+        if ref_type == "book":
+            db.session.execute(
+                text("""
+                    INSERT INTO book_references
+                        (key, author, title, year, publisher, pages)
+                    VALUES
+                        (:key, :author, :title, :year, :publisher, :pages)
+                """),
+                {**filled, "year": int(filled["year"])},
+            )
+        else:
+            db.session.execute(
+                text("""
+                    INSERT INTO article_references
+                        (key, author, title, year, journal, pages)
+                    VALUES
+                        (:key, :author, :title, :year, :journal, :pages)
+                """),
+                {**filled, "year": int(filled["year"])},
+            )
+
         db.session.commit()
         return redirect(url_for("index"))
+
     except IntegrityError:
         db.session.rollback()
         return render_template(
@@ -78,6 +135,9 @@ def new_reference():
 
 @app.route("/references/<ref_type>/<int:ref_id>/edit", methods=["GET", "POST"])
 def edit_reference(ref_type, ref_id):
+    if ref_type not in REFERENCE_FIELDS:
+        abort(404)
+
     reference = get_reference(ref_type, ref_id)
     if reference is None:
         abort(404)

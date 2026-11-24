@@ -24,26 +24,38 @@
                 <a class="add-reference" href="{{ url_for('new_reference') }}">+ Add reference</a>
             </header>
             {% if references %}
-            <ul class="reference-list">
-                {% for reference in references %}
-                <li class="reference">
-                    <div class="reference-header">
-                        <span class="reference-type">BOOK</span>
-                        <h2>{{ reference.title }}</h2>
-                        <code class="citation-key" aria-label="Citation key">\cite{ {{- reference.key -}} }</code>
-                    </div>
-                    <dl class="metadata">
-                        <div><dt>Author</dt><dd>{{ reference.author }}</dd></div>
-                        <div><dt>Year</dt><dd>{{ reference.year }}</dd></div>
-                        <div><dt>Publisher</dt><dd>{{ reference.publisher }}</dd></div>
-                        {% if reference.pages %}
-                        <div><dt>Pages</dt><dd>{{ reference.pages }}</dd></div>
-                        {% endif %}
-                    </dl>
-                    <a class="edit-reference" href="{{ url_for('edit_reference', ref_type='book', ref_id=reference.id) }}">Edit</a>
-                </li>
-                {% endfor %}
-            </ul>
+                <ul class="reference-list">
+                   {% for reference in references %}
+       <li class="reference">
+           <div class="reference-header">
+               <span class="reference-type">{{ reference.ref_type | upper }}</span>
+               <h2>{{ reference.title }}</h2>
+               <code class="citation-key" aria-label="Citation key">\cite{ {{- reference.key -}} }</code>
+           </div>
+        
+           <dl class="metadata">
+               <div><dt>Author</dt><dd>{{ reference.author }}</dd></div>
+               <div><dt>Year</dt><dd>{{ reference.year }}</dd></div>
+            
+               {% if reference.ref_type == 'book' %}
+               <div><dt>Publisher</dt><dd>{{ reference.publication }}</dd></div>
+               {% else %}
+               <div><dt>Journal</dt><dd>{{ reference.publication }}</dd></div>
+               {% endif %}
+            
+               {% if reference.pages %}
+               <div><dt>Pages</dt><dd>{{ reference.pages }}</dd></div>
+               {% endif %}
+           </dl>
+        
+           <a class="edit-reference"
+           href="{{ url_for('edit_reference',
+                               ref_type=reference.ref_type,
+                               ref_id=reference.id) }}">Edit</a>
+       </li>
+       {% endfor %}
+
+
             {% else %}
             <p class="empty-message">No references yet.</p>
             {% endif %}

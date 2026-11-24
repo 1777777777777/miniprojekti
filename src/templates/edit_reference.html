@@ -30,7 +30,26 @@
                 <input id="pages" name="pages" value="{{ filled.get('pages', '') }}" placeholder="42 or 42–48">
 
             {% elif ref_type == "article" %}
-                <!-- Add article form fields here -->
+                <label for="key">Citation key</label>
+                <input id="key" name="key" value="{{ filled.get('key', '') }}" required>
+                    
+                <label for="author">Author</label>
+                <input id="author" name="author" value="{{ filled.get('author', '') }}" required>
+                    
+                <label for="title">Article title</label>
+                <input id="title" name="title" value="{{ filled.get('title', '') }}" required>
+                    
+                <label for="year">Publication year</label>
+                <input id="year" name="year" type="number" step="1" min="1"
+                       value="{{ filled.get('year', '') }}" required>
+                    
+                <label for="journal">Journal name</label>
+                <input id="journal" name="journal"
+                       value="{{ filled.get('journal', '') }}" required>
+                    
+                <label for="pages">Pages (optional)</label>
+                <input id="pages" name="pages" value="{{ filled.get('pages', '') }}"
+                       placeholder="42 or 42–48">
 
             {% elif ref_type == "inproceedings" %}
                 <!-- Add inproceedings form fields here -->

@@ -4,9 +4,15 @@ from config import db
 
 REFERENCE_TABLES = {
     "book": "book_references",
-    # "article": "article_references",
+    "article": "article_references",
     # "inproceedings": "inproceedings_references",
 }
+
+REFERENCE_COLUMNS = {
+    "book": {"key", "author", "title", "year", "publisher", "pages"},
+    "article": {"key", "author", "title", "year", "journal", "pages"},
+}
+
 
 
 def get_reference(ref_type, ref_id):
