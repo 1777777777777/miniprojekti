@@ -196,7 +196,7 @@ class TestIndexRoutes(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"1 reference", response.data)
-        self.assertIn(b'<span class="reference-type">ARTICLE</span>', response.data)
+        self.assertIn(b'<span class="reference-type article">ARTICLE</span>', response.data)
         self.assertIn(b"<dt>Journal</dt><dd>Communications of the ACM</dd>", response.data)
         self.assertNotIn(b"<dt>Publisher</dt>", response.data)
 

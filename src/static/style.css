@@ -158,6 +158,14 @@ body {
     font-weight: 700;
 }
 
+.reference-type.article {
+    color: #e0a96d;
+}
+
+.reference-type.inproceedings {
+    color: #c88cdc;
+}
+
 .citation-key,
 .metadata {
     font: 11px/1.35 Consolas, monospace;

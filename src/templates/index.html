@@ -28,7 +28,7 @@
                    {% for reference in references %}
        <li class="reference">
            <div class="reference-header">
-               <span class="reference-type">{{ reference.ref_type | upper }}</span>
+               <span class="reference-type {{ reference.ref_type }}">{{ reference.ref_type | upper }}</span>
                <h2>{{ reference.title }}</h2>
                <code class="citation-key" aria-label="Citation key">\cite{ {{- reference.key -}} }</code>
            </div>
