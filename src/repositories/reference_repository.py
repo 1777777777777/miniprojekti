@@ -8,12 +8,6 @@ REFERENCE_TABLES = {
     # "inproceedings": "inproceedings_references",
 }
 
-REFERENCE_COLUMNS = {
-    "book": {"key", "author", "title", "year", "publisher", "pages"},
-    "article": {"key", "author", "title", "year", "journal", "pages"},
-}
-
-
 
 def get_reference(ref_type, ref_id):
     if ref_type not in REFERENCE_TABLES:

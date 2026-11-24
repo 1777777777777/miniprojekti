@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Add book reference</title>
+    <title>Add reference</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="form-page">
     <main class="reference-form-panel">
-        <h1>Add book reference</h1>
+        <h1>Add reference</h1>
         <form class="reference-form" method="post" action="{{ url_for('new_reference') }}">
     <label for="reference_type">Reference type</label>
 <select id="reference_type" name="reference_type">

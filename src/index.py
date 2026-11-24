@@ -5,21 +5,18 @@ from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 
 from config import app, db
-from db_helper import reset_db, seed_db, setup_db
+from db_helper import reset_db, seed_db
 from repositories.reference_repository import get_reference, update_reference
-
 
 REFERENCE_FIELDS = {
     "book": ("key", "author", "title", "year", "publisher", "pages"),
     "article": ("key", "author", "title", "year", "journal", "pages"),
-    # "article": (),
     # "inproceedings": (),
 }
 
 REQUIRED_FIELDS = {
     "book": ("key", "author", "title", "year", "publisher"),
     "article": ("key", "author", "title", "year", "journal"),
-    # "article": (),
     # "inproceedings": (),
 }
 
@@ -42,8 +39,6 @@ def validate_reference_form(ref_type, filled):
 
 @app.get("/")
 def index():
-    setup_db()
-    
     result = db.session.execute(text("""
         SELECT
             id, key, title, author, year,
@@ -60,8 +55,6 @@ def index():
             pages,
             'article' AS ref_type
         FROM article_references
-
-        ORDER BY year DESC, title
     """))
 
     references = result.fetchall()
