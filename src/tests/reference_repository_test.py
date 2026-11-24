@@ -33,6 +33,21 @@ class TestReferenceRepository(unittest.TestCase):
             {"key": key},
         ).scalar()
 
+    def _insert_article(self):
+        db.session.execute(
+            text("""
+                INSERT INTO article_references
+                    (key, title, author, year, journal, pages)
+                VALUES
+                    ('Dijkstra68', 'Go To Statement Considered Harmful',
+                     'Edsger W. Dijkstra', 1968, 'CACM', '147-148')
+            """)
+        )
+        db.session.commit()
+        return db.session.execute(
+            text("SELECT id FROM article_references WHERE key = 'Dijkstra68'")
+        ).scalar()
+
     def test_get_reference_returns_existing_book_reference(self):
         ref_id = self._get_id_by_key("Martin08")
 
@@ -112,3 +127,36 @@ class TestReferenceRepository(unittest.TestCase):
                     "pages": "42",
                 },
             )
+
+    def test_get_reference_returns_existing_article_reference(self):
+        ref_id = self._insert_article()
+
+        reference = get_reference("article", ref_id)
+
+        self.assertIsNotNone(reference)
+        self.assertEqual(reference["id"], ref_id)
+        self.assertEqual(reference["key"], "Dijkstra68")
+        self.assertEqual(reference["title"], "Go To Statement Considered Harmful")
+        self.assertEqual(reference["author"], "Edsger W. Dijkstra")
+        self.assertEqual(reference["year"], 1968)
+        self.assertEqual(reference["journal"], "CACM")
+        self.assertEqual(reference["pages"], "147-148")
+
+    def test_update_reference_updates_existing_article_reference(self):
+        ref_id = self._insert_article()
+        updated_data = {
+            "key": "Dijkstra68_v2",
+            "title": "Go To Statement Considered Harmful (Revised)",
+            "author": "E. W. Dijkstra",
+            "year": 1969,
+            "journal": "Communications of the ACM",
+            "pages": "147-149",
+        }
+
+        updated = update_reference("article", ref_id, updated_data)
+        reference = get_reference("article", ref_id)
+
+        self.assertTrue(updated)
+        self.assertEqual(reference["key"], "Dijkstra68_v2")
+        self.assertEqual(reference["journal"], "Communications of the ACM")
+        self.assertEqual(reference["year"], 1969)

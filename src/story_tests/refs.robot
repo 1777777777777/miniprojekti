@@ -41,6 +41,30 @@ User can add a new book reference
     Get Text  body  *=  The Art of Computer Programming
 
 
+User can add a new article reference
+    Go To  http://${SERVER}/references/new
+    Select Options By  select[name="reference_type"]  value  article
+    Fill Text  input[name="key"]  Dijkstra68
+    Fill Text  input[name="author"]  Edsger W. Dijkstra
+    Fill Text  input[name="title"]  Go To Statement Considered Harmful
+    Fill Text  input[name="year"]  1968
+    Fill Text  input[name="journal"]  Communications of the ACM
+    Fill Text  input[name="pages"]  147-148
+    Click  button[type="submit"]
+    Get Text  h1  ==  1 reference
+    Get Text  .reference .reference-type  ==  ARTICLE
+    Get Text  .reference h2  ==  Go To Statement Considered Harmful
+    Get Text  .reference .citation-key  ==  \\cite{Dijkstra68}
+    Get Text  .reference .metadata  *=  Author
+    Get Text  .reference .metadata  *=  Edsger W. Dijkstra
+    Get Text  .reference .metadata  *=  Year
+    Get Text  .reference .metadata  *=  1968
+    Get Text  .reference .metadata  *=  Journal
+    Get Text  .reference .metadata  *=  Communications of the ACM
+    Get Text  .reference .metadata  *=  Pages
+    Get Text  .reference .metadata  *=  147-148
+
+
 User can edit a reference
     Go To  http://${SERVER}/seed_db
     Go To  ${HOME_URL}

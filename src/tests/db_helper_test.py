@@ -24,6 +24,9 @@ class TestDbHelper(unittest.TestCase):
     def test_setup_db_creates_book_references_table(self):
         self.assertIn("book_references", tables())
 
+    def test_setup_db_creates_article_references_table(self):
+        self.assertIn("article_references", tables())
+
     def test_seed_db_inserts_example_references(self):
         seed_db()
         count = db.session.execute(
@@ -41,8 +44,19 @@ class TestDbHelper(unittest.TestCase):
 
     def test_reset_db_clears_references(self):
         seed_db()
+        db.session.execute(
+            text(
+                "INSERT INTO article_references (key, title, author, year, journal) "
+                "VALUES ('Dijkstra68', 'Go To Statement', 'Dijkstra', 1968, 'CACM')"
+            )
+        )
+        db.session.commit()
         reset_db()
-        count = db.session.execute(
+        book_count = db.session.execute(
             text("SELECT COUNT(*) FROM book_references")
         ).scalar()
-        self.assertEqual(count, 0)
+        article_count = db.session.execute(
+            text("SELECT COUNT(*) FROM article_references")
+        ).scalar()
+        self.assertEqual(book_count, 0)
+        self.assertEqual(article_count, 0)

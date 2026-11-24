@@ -179,3 +179,109 @@ class TestIndexRoutes(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn(b"Citation key already exists.", response.data)
         self.assertIn(b'value="Gamma94"', response.data)
+
+    def test_create_article_reference_valid(self):
+        response = self.client.post(
+            "/references/new",
+            data={
+                "reference_type": "article",
+                "key": "Dijkstra68",
+                "author": "Edsger W. Dijkstra",
+                "title": "Go To Statement Considered Harmful",
+                "year": "1968",
+                "journal": "Communications of the ACM",
+                "pages": "147-148",
+            },
+            follow_redirects=True,
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"1 reference", response.data)
+        self.assertIn(b'<span class="reference-type">ARTICLE</span>', response.data)
+        self.assertIn(b"<dt>Journal</dt><dd>Communications of the ACM</dd>", response.data)
+        self.assertNotIn(b"<dt>Publisher</dt>", response.data)
+
+        row = db.session.execute(
+            text("SELECT * FROM article_references WHERE key = 'Dijkstra68'")
+        ).mappings().first()
+        self.assertIsNotNone(row)
+        self.assertEqual(row["author"], "Edsger W. Dijkstra")
+        self.assertEqual(row["title"], "Go To Statement Considered Harmful")
+        self.assertEqual(row["year"], 1968)
+        self.assertEqual(row["journal"], "Communications of the ACM")
+        self.assertEqual(row["pages"], "147-148")
+
+        book_count = db.session.execute(
+            text("SELECT COUNT(*) FROM book_references")
+        ).scalar()
+        self.assertEqual(book_count, 0)
+
+    def test_create_article_reference_missing_required_field(self):
+        response = self.client.post(
+            "/references/new",
+            data={
+                "reference_type": "article",
+                "key": "Dijkstra68",
+                "author": "Edsger W. Dijkstra",
+                "title": "Go To Statement Considered Harmful",
+                "year": "1968",
+                "journal": "",
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b"All required fields must be filled.", response.data)
+        article_count = db.session.execute(
+            text("SELECT COUNT(*) FROM article_references")
+        ).scalar()
+        self.assertEqual(article_count, 0)
+
+    def test_create_reference_invalid_type(self):
+        response = self.client.post(
+            "/references/new",
+            data={
+                "reference_type": "invalid_type",
+                "key": "Key1",
+            },
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b"Choose a valid reference type.", response.data)
+
+    def test_edit_article_reference_valid_updates_database(self):
+        self.client.post(
+            "/references/new",
+            data={
+                "reference_type": "article",
+                "key": "Dijkstra68",
+                "author": "Edsger W. Dijkstra",
+                "title": "Go To Statement Considered Harmful",
+                "year": "1968",
+                "journal": "CACM",
+                "pages": "147-148",
+            },
+        )
+        ref_id = db.session.execute(
+            text("SELECT id FROM article_references WHERE key = 'Dijkstra68'")
+        ).scalar()
+
+        get_response = self.client.get(f"/references/article/{ref_id}/edit")
+        self.assertEqual(get_response.status_code, 200)
+        self.assertIn(b"Edit article reference", get_response.data)
+
+        post_response = self.client.post(
+            f"/references/article/{ref_id}/edit",
+            data={
+                "key": "Dijkstra68_v2",
+                "author": "Edsger W. Dijkstra",
+                "title": "Go To Statement Considered Harmful",
+                "year": "1968",
+                "journal": "Communications of the ACM",
+                "pages": "147-148",
+            },
+            follow_redirects=True,
+        )
+        self.assertEqual(post_response.status_code, 200)
+        self.assertIn(b"Dijkstra68_v2", post_response.data)
+        self.assertIn(b"Communications of the ACM", post_response.data)
+
+    def test_edit_reference_unknown_type_returns_404(self):
+        response = self.client.get("/references/unknown/1/edit")
+        self.assertEqual(response.status_code, 404)
