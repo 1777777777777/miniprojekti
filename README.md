@@ -15,20 +15,22 @@ Sovelluksen keskeisiä ominaisuuksia ovat:
 
 ### Dokumentaatio
 
-[Pelisäännöt](https://github.com/1777777777777/miniprojekti/blob/main/pelisaannot.md)
+- [Pelisäännöt](https://github.com/1777777777777/miniprojekti/blob/main/pelisaannot.md)
 
-[Hyväksymiskriteerit](https://github.com/1777777777777/miniprojekti/blob/main/dod.md)
+- [Hyväksymiskriteerit](https://github.com/1777777777777/miniprojekti/blob/main/dod.md)
 
-[Product backlog](https://github.com/users/1777777777777/projects/1/views/1)
+- [Product backlog](https://github.com/users/1777777777777/projects/1/views/1)
 
-[Sprintin 1 backlog](https://github.com/users/1777777777777/projects/1/views/2)
+- [Retrospektiivit](https://github.com/1777777777777/miniprojekti/blob/main/retro.md)
 
-[Sprintin 2 backlog](https://github.com/users/1777777777777/projects/1/views/3)
+- [Sprintin 1 backlog](https://github.com/users/1777777777777/projects/1/views/2)
 
-[Sprintin 3 backlog](https://github.com/users/1777777777777/projects/1/views/4)
+- [Sprintin 2 backlog](https://github.com/users/1777777777777/projects/1/views/3)
 
-[Sprintin 4 backlog](https://github.com/users/1777777777777/projects/1/views/5)
+- [Sprintin 3 backlog](https://github.com/users/1777777777777/projects/1/views/4)
 
-[CI](https://github.com/1777777777777/miniprojekti/actions)
+- [Sprintin 4 backlog](https://github.com/users/1777777777777/projects/1/views/5)
 
-This project is licensed under the [MIT License](https://github.com/1777777777777/miniprojekti?tab=MIT-1-ov-file). 
+- [CI](https://github.com/1777777777777/miniprojekti/actions)
+
+This project is licensed under the [MIT License](https://github.com/1777777777777/miniprojekti/blob/main/LICENSE). 
