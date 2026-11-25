@@ -1,8 +1,5 @@
 ### Sprintin 1 retrospektiivi
 
-Läsnä: Olavi, Topi, Igor, Elias (kirjuri)
-Poissa: Elis
-
 Kesto: 30 mins
 
 - Sprintti meni kaikkien mielestä lopulta hyvin
