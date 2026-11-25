@@ -391,3 +391,17 @@ class TestReferenceMutationRoutes(IndexRouteTestCase):
             db.session.rollback()
             db.session.execute(text("DROP TRIGGER prevent_book_reference_delete"))
             db.session.commit()
+
+    def test_delete_reference_shows_error_when_reference_list_cannot_load(self):
+        db.session.execute(text("DROP TABLE inproceedings_references"))
+        db.session.commit()
+
+        try:
+            response = self.client.post("/references/inproceedings/1/delete")
+
+            self.assertEqual(response.status_code, 500)
+            self.assertIn(b"Could not delete the reference. Please try again.", response.data)
+            self.assertIn(b"Could not load references.", response.data)
+            self.assertNotIn(b"No references yet.", response.data)
+        finally:
+            setup_db()

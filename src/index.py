@@ -214,10 +214,17 @@ def delete_reference(ref_type, ref_id):
     try:
         deleted = remove_reference(ref_type, ref_id)
     except SQLAlchemyError:
+        app.logger.exception("Could not delete reference %s/%s", ref_type, ref_id)
         db.session.rollback()
+        try:
+            references = load_references()
+        except SQLAlchemyError:
+            db.session.rollback()
+            references = None
+
         return render_template(
             "index.html",
-            references=load_references(),
+            references=references,
             error="Could not delete the reference. Please try again.",
         ), 500
 

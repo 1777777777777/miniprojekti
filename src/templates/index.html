@@ -20,7 +20,11 @@
              aria-valuemax="480" aria-valuenow="240"></div>
         <main class="references-panel">
             <header class="references-header">
+                {% if references is none %}
+                <h1>References</h1>
+                {% else %}
                 <h1>{{ references | length }} {{ 'reference' if references | length == 1 else 'references' }}</h1>
+                {% endif %}
                 <a class="add-reference" href="{{ url_for('new_reference') }}">+ Add reference</a>
             </header>
             {% if error %}
@@ -70,6 +74,8 @@
                 </ul>
 
 
+            {% elif references is none %}
+            <p class="empty-message">Could not load references. <a href="{{ url_for('index') }}">Retry loading references</a>.</p>
             {% else %}
             <p class="empty-message">No references yet.</p>
             {% endif %}
