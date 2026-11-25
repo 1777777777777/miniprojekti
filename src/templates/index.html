@@ -42,8 +42,10 @@
             
                {% if reference.ref_type == 'book' %}
                <div><dt>Publisher</dt><dd>{{ reference.publication }}</dd></div>
-               {% else %}
+               {% elif reference.ref_type == 'article' %}
                <div><dt>Journal</dt><dd>{{ reference.publication }}</dd></div>
+               {% elif reference.ref_type == 'inproceedings' %}
+               <div><dt>Book Title</dt><dd>{{ reference.publication }}</dd></div>
                {% endif %}
             
                {% if reference.pages %}

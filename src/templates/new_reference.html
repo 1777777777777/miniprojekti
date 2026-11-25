@@ -20,6 +20,10 @@
         {% if filled.get('reference_type') == 'article' %}selected{% endif %}>
         Article
     </option>
+    <option value="inproceedings"
+        {% if filled.get('reference_type') == 'inproceedings' %}selected{% endif %}>
+        Inproceedings
+    </option>
 </select>
 
 <label for="key">Citation key</label>
@@ -47,6 +51,12 @@
            value="{{ filled.get('journal', '') }}" required>
 </fieldset>
 
+<fieldset id="inproceedings-fields" hidden disabled>
+    <label for="booktitle">Book title</label>
+    <input id="booktitle" name="booktitle"
+           value="{{ filled.get('booktitle', '') }}" required>
+</fieldset>
+
 <label for="pages">Pages (optional)</label>
 <input id="pages" name="pages" value="{{ filled.get('pages', '') }}"
        placeholder="42 or 42–48">
@@ -65,14 +75,18 @@
     const typeSelect = document.getElementById("reference_type");
     const bookFields = document.getElementById("book-fields");
     const articleFields = document.getElementById("article-fields");
+    const proceedingsFields = document.getElementById("inproceedings-fields");
 
     function updateFields() {
         const isArticle = typeSelect.value === "article";
+        const isInproceedings = typeSelect.value === "inproceedings";
 
-        bookFields.hidden = isArticle;
-        bookFields.disabled = isArticle;
-        articleFields.hidden = !isArticle;
-        articleFields.disabled = !isArticle;
+        bookFields.hidden = isArticle || isInproceedings;
+        bookFields.disabled = isArticle || isInproceedings;
+        articleFields.hidden = !isArticle || isInproceedings;
+        articleFields.disabled = !isArticle || isInproceedings;
+        proceedingsFields.hidden = !isInproceedings;
+        proceedingsFields.disabled = !isInproceedings;
     }
 
     typeSelect.addEventListener("change", updateFields);
