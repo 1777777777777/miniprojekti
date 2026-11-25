@@ -5,7 +5,7 @@ from config import db
 REFERENCE_TABLES = {
     "book": "book_references",
     "article": "article_references",
-    # "inproceedings": "inproceedings_references",
+    "inproceedings": "inproceedings_references",
 }
 
 
