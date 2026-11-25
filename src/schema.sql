@@ -17,3 +17,13 @@ CREATE TABLE IF NOT EXISTS article_references (
     journal TEXT NOT NULL,
     pages TEXT
 );
+
+CREATE TABLE IF NOT EXISTS inproceedings_references (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    key TEXT UNIQUE NOT NULL,
+    title TEXT NOT NULL,
+    author TEXT NOT NULL,
+    year INTEGER NOT NULL CHECK (year > 0),
+    booktitle TEXT NOT NULL,
+    pages TEXT
+);

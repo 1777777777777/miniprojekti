@@ -15,13 +15,13 @@ from repositories.reference_repository import (
 REFERENCE_FIELDS = {
     "book": ("key", "author", "title", "year", "publisher", "pages"),
     "article": ("key", "author", "title", "year", "journal", "pages"),
-    # "inproceedings": (),
+    "inproceedings": ("key", "author", "title", "year", "booktitle", "pages"),
 }
 
 REQUIRED_FIELDS = {
     "book": ("key", "author", "title", "year", "publisher"),
     "article": ("key", "author", "title", "year", "journal"),
-    # "inproceedings": (),
+    "inproceedings": ("key", "author", "title", "year", "booktitle"),
 }
 
 SQLITE_MAX_INTEGER = "9223372036854775807"
@@ -72,6 +72,15 @@ def load_references():
             pages,
             'article' AS ref_type
         FROM article_references
+
+        UNION ALL
+
+        SELECT
+            id, key, title, author, year,
+            booktitle AS publication,
+            pages,
+            'inproceedings' AS ref_type
+        FROM inproceedings_references
     """))
 
     return result.fetchall()
@@ -127,13 +136,23 @@ def new_reference():
                 """),
                 {**filled, "year": int(filled["year"])},
             )
-        else:
+        elif ref_type == "article":
             db.session.execute(
                 text("""
                     INSERT INTO article_references
                         (key, author, title, year, journal, pages)
                     VALUES
                         (:key, :author, :title, :year, :journal, :pages)
+                """),
+                {**filled, "year": int(filled["year"])},
+            )
+        elif ref_type == "inproceedings":
+            db.session.execute(
+                text("""
+                    INSERT INTO inproceedings_references
+                        (key, author, title, year, booktitle, pages)
+                    VALUES
+                        (:key, :author, :title, :year, :booktitle, :pages)
                 """),
                 {**filled, "year": int(filled["year"])},
             )

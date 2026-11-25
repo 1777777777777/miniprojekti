@@ -21,6 +21,7 @@ def reset_db():
     print("Clearing reference tables")
     db.session.execute(text("DELETE FROM book_references"))
     db.session.execute(text("DELETE FROM article_references"))
+    db.session.execute(text("DELETE FROM inproceedings_references"))
     db.session.commit()
 
 
