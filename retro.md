@@ -12,4 +12,4 @@ Kesto: 30 mins
 - Jokainen voi siivota repoa, kun huomaa siellä turhaa tekstiä/tiedostoja (lähinnä boilerplatesta
 - Mitä aiemmin pyrkii aloittamaan, sitä vähemmän stressiä ennen tapaamista (materiaalin lukeminen / repon vilkuilukin on hyvä aloitus)
 - Kysytään jos tulee ongelmia tai on epävarma
-- Kolme konkreettista parannuskohdetta seuraavaan sprinttiin: Projekti OKD-klusterille, Repossa ei ylimääräistä tavaraa, kolme yllä mainittua taulua valmiina
+- **Kolme konkreettista parannuskohdetta seuraavaan sprinttiin: Projekti OKD-klusterille, Repossa ei ylimääräistä tavaraa, kolme yllä mainittua taulua valmiina**
