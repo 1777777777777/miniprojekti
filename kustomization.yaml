@@ -28,7 +28,7 @@ patches:
   - target:
       kind: Route
       name: route
-    patch: route-ohjelmistotuotanto-lahiopetus-2026-11.ext.okd-cs-test-0.k8s.cs.helsinki.fi
+    patch: |-
       - op: add
         path: /spec/host
-        value: route-acual-miniprojekti-boilerplate.ext.okd-cs-test-0.k8s.cs.helsinki.fi
+        value: route-ohjelmistotuotanto-lahiopetus-2026-11.ext.okd-cs-test-0.k8s.cs.helsinki.fi
