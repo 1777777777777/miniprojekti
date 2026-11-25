@@ -11,7 +11,7 @@ from db_helper import reset_db, seed_db, setup_db  # pylint: disable=wrong-impor
 import index  # noqa: F401, pylint: disable=unused-import,wrong-import-position
 
 
-class TestIndexRoutes(unittest.TestCase):
+class IndexRouteTestCase(unittest.TestCase):
     def setUp(self):
         self.ctx = app.app_context()
         self.ctx.push()
@@ -29,6 +29,8 @@ class TestIndexRoutes(unittest.TestCase):
         db.session.remove()
         self.ctx.pop()
 
+
+class TestIndexRoutes(IndexRouteTestCase):
     def test_index_empty_db(self):
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
@@ -285,3 +287,107 @@ class TestIndexRoutes(unittest.TestCase):
     def test_edit_reference_unknown_type_returns_404(self):
         response = self.client.get("/references/unknown/1/edit")
         self.assertEqual(response.status_code, 404)
+
+
+class TestReferenceMutationRoutes(IndexRouteTestCase):
+    def test_create_reference_year_beyond_sqlite_integer_limit_is_rejected(self):
+        response = self.client.post(
+            "/references/new",
+            data={
+                "key": "TooFar",
+                "author": "Author",
+                "title": "Title",
+                "year": "9223372036854775808",
+                "publisher": "Publisher",
+            },
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b"Publication year is too large.", response.data)
+        count = db.session.execute(
+            text("SELECT COUNT(*) FROM book_references")
+        ).scalar()
+        self.assertEqual(count, 0)
+
+    def test_edit_reference_year_beyond_sqlite_integer_limit_is_rejected(self):
+        ref_id = self._seed_and_get_martin_id()
+
+        response = self.client.post(
+            f"/references/book/{ref_id}/edit",
+            data={
+                "key": "Martin08",
+                "author": "Robert C. Martin",
+                "title": "Clean Code",
+                "year": "9223372036854775808",
+                "publisher": "Prentice Hall",
+                "pages": "42",
+            },
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(b"Publication year is too large.", response.data)
+        year = db.session.execute(
+            text("SELECT year FROM book_references WHERE id = :id"),
+            {"id": ref_id},
+        ).scalar()
+        self.assertEqual(year, 2008)
+
+    def test_delete_reference_removes_book_and_redirects(self):
+        seed_db()
+        ref_id = db.session.execute(
+            text("SELECT id FROM book_references WHERE key = 'Martin08'")
+        ).scalar()
+
+        response = self.client.post(
+            f"/references/book/{ref_id}/delete",
+            follow_redirects=True,
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn(b"Martin08", response.data)
+        row = db.session.execute(
+            text("SELECT * FROM book_references WHERE id = :id"),
+            {"id": ref_id},
+        ).first()
+        self.assertIsNone(row)
+
+    def test_delete_reference_returns_404_for_unknown_type(self):
+        response = self.client.post("/references/unknown/1/delete")
+        self.assertEqual(response.status_code, 404)
+
+    def test_delete_reference_returns_404_for_nonexistent_reference(self):
+        response = self.client.post("/references/book/999/delete")
+        self.assertEqual(response.status_code, 404)
+
+    def test_delete_reference_shows_error_and_preserves_reference_on_database_failure(self):
+        ref_id = self._seed_and_get_martin_id()
+        db.session.execute(text("""
+            CREATE TRIGGER prevent_book_reference_delete
+            BEFORE DELETE ON book_references
+            BEGIN
+                SELECT RAISE(ABORT, 'delete not allowed');
+            END
+        """))
+        db.session.commit()
+
+        try:
+            response = self.client.post(
+                f"/references/book/{ref_id}/delete",
+                follow_redirects=True,
+            )
+
+            self.assertEqual(response.status_code, 500)
+            self.assertIn(
+                b"Could not delete the reference. Please try again.",
+                response.data,
+            )
+            self.assertIn(b"Martin08", response.data)
+            row = db.session.execute(
+                text("SELECT * FROM book_references WHERE id = :id"),
+                {"id": ref_id},
+            ).first()
+            self.assertIsNotNone(row)
+        finally:
+            db.session.rollback()
+            db.session.execute(text("DROP TRIGGER prevent_book_reference_delete"))
+            db.session.commit()

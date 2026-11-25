@@ -80,3 +80,24 @@ User can edit a reference
     Get Text  body  *=  2009
 
 
+User can delete a reference
+    Go To  http://${SERVER}/seed_db
+    Go To  ${HOME_URL}
+    Handle Future Dialogs  action=accept
+    Hover  .reference >> nth=0
+    Click  .delete-reference button >> nth=0
+    Get Text  h1  ==  3 references
+    Get Element Count  .reference  ==  3
+
+
+User can cancel deleting a reference
+    Go To  http://${SERVER}/seed_db
+    Go To  ${HOME_URL}
+    Handle Future Dialogs  action=dismiss
+    Hover  .reference >> nth=0
+    Click  .delete-reference button >> nth=0
+    Get Text  h1  ==  4 references
+    Get Element Count  .reference  ==  4
+    Get Text  body  *=  \\cite{Martin08}
+
+

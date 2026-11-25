@@ -139,6 +139,34 @@ body {
     text-decoration: underline;
 }
 
+.delete-reference {
+    position: absolute;
+    right: 56px;
+    bottom: 4px;
+    opacity: 0;
+}
+
+.reference:hover .delete-reference,
+.reference:focus-within .delete-reference {
+    opacity: 1;
+}
+
+.delete-reference button {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #5c5c5c;
+    font-family: Consolas, monospace;
+    font-size: 9px;
+    cursor: pointer;
+}
+
+.delete-reference button:hover,
+.delete-reference button:focus-visible {
+    color: #e8ecf0;
+    text-decoration: underline;
+}
+
 .reference-header {
     display: flex;
     align-items: baseline;

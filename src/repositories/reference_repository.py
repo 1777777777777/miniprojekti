@@ -36,3 +36,15 @@ def update_reference(ref_type, ref_id, data):
     db.session.commit()
 
     return result.rowcount > 0
+
+
+def remove_reference(ref_type, ref_id):
+    if ref_type not in REFERENCE_TABLES:
+        return False
+
+    table = REFERENCE_TABLES[ref_type]
+    sql = text(f"DELETE FROM {table} WHERE id = :id")
+    result = db.session.execute(sql, {"id": ref_id})
+    db.session.commit()
+
+    return result.rowcount > 0

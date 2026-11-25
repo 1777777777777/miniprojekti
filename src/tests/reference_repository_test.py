@@ -11,6 +11,7 @@ from config import app, db  # pylint: disable=wrong-import-position
 from db_helper import reset_db, seed_db, setup_db  # pylint: disable=wrong-import-position
 from repositories.reference_repository import (  # pylint: disable=wrong-import-position
     get_reference,
+    remove_reference,
     update_reference,
 )
 
@@ -160,3 +161,25 @@ class TestReferenceRepository(unittest.TestCase):
         self.assertEqual(reference["key"], "Dijkstra68_v2")
         self.assertEqual(reference["journal"], "Communications of the ACM")
         self.assertEqual(reference["year"], 1969)
+
+    def test_remove_reference_deletes_existing_book_reference(self):
+        ref_id = self._get_id_by_key("Martin08")
+
+        deleted = remove_reference("book", ref_id)
+
+        self.assertTrue(deleted)
+        self.assertIsNone(get_reference("book", ref_id))
+
+    def test_remove_reference_returns_false_for_nonexistent_id(self):
+        self.assertFalse(remove_reference("book", 999))
+
+    def test_remove_reference_returns_false_for_unknown_type(self):
+        self.assertFalse(remove_reference("unknown", 1))
+
+    def test_remove_reference_deletes_existing_article_reference(self):
+        ref_id = self._insert_article()
+
+        deleted = remove_reference("article", ref_id)
+
+        self.assertTrue(deleted)
+        self.assertIsNone(get_reference("article", ref_id))

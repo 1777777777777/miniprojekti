@@ -2,11 +2,15 @@ from os import getenv
 
 from flask import abort, jsonify, redirect, render_template, request, url_for
 from sqlalchemy import text
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from config import app, db
 from db_helper import reset_db, seed_db
-from repositories.reference_repository import get_reference, update_reference
+from repositories.reference_repository import (
+    get_reference,
+    remove_reference,
+    update_reference,
+)
 
 REFERENCE_FIELDS = {
     "book": ("key", "author", "title", "year", "publisher", "pages"),
@@ -20,6 +24,8 @@ REQUIRED_FIELDS = {
     # "inproceedings": (),
 }
 
+SQLITE_MAX_INTEGER = "9223372036854775807"
+
 
 def read_reference_form(ref_type):
     fields = REFERENCE_FIELDS[ref_type]
@@ -31,14 +37,25 @@ def validate_reference_form(ref_type, filled):
     if any(not filled[f] for f in required):
         return "All required fields must be filled."
 
-    if not filled["year"].isdigit() or int(filled["year"]) <= 0:
+    year = filled["year"]
+    if not year.isascii() or not year.isdecimal():
         return "Publication year must be a positive number."
 
+    normalized_year = year.lstrip("0")
+    if not normalized_year:
+        return "Publication year must be a positive number."
+
+    if len(normalized_year) > len(SQLITE_MAX_INTEGER) or (
+        len(normalized_year) == len(SQLITE_MAX_INTEGER)
+        and normalized_year > SQLITE_MAX_INTEGER
+    ):
+        return "Publication year is too large."
+
+    filled["year"] = normalized_year
     return None
 
 
-@app.get("/")
-def index():
+def load_references():
     result = db.session.execute(text("""
         SELECT
             id, key, title, author, year,
@@ -57,9 +74,16 @@ def index():
         FROM article_references
     """))
 
-    references = result.fetchall()
+    return result.fetchall()
 
-    return render_template("index.html", references=references)
+
+@app.get("/")
+def index():
+    return render_template(
+        "index.html",
+        references=load_references(),
+        error=None,
+    )
 
 
 @app.route("/references/new", methods=["GET", "POST"])
@@ -164,6 +188,24 @@ def edit_reference(ref_type, ref_id):
             error="Citation key already exists.",
             filled=filled,
         ), 400
+
+
+@app.post("/references/<ref_type>/<int:ref_id>/delete")
+def delete_reference(ref_type, ref_id):
+    try:
+        deleted = remove_reference(ref_type, ref_id)
+    except SQLAlchemyError:
+        db.session.rollback()
+        return render_template(
+            "index.html",
+            references=load_references(),
+            error="Could not delete the reference. Please try again.",
+        ), 500
+
+    if not deleted:
+        abort(404)
+
+    return redirect(url_for("index"))
 
 
 if getenv("TEST_ENV") == "true":
