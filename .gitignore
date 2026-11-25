@@ -9,5 +9,4 @@ output.xml
 report.html
 *.png
 !misc/*.png
-secret.env
 playwright-log.txt
