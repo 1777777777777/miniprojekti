@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: acual-miniprojekti-boilerplate
+namespace: ohjelmistotuotanto-lahiopetus-2026-11
 
 resources:
   - manifests/configmap.yaml
@@ -21,14 +21,14 @@ configurations:
 
 images:
   - name: source-image
-    newName: ghcr.io/ohjelmistotuotanto-hy/miniprojekti-boilerplate
+    newName: ghcr.io/1777777777777/miniprojekti
     newTag: latest
 
 patches:
   - target:
       kind: Route
       name: route
-    patch: |-
+    patch: route-ohjelmistotuotanto-lahiopetus-2026-11.ext.okd-cs-test-0.k8s.cs.helsinki.fi
       - op: add
         path: /spec/host
         value: route-acual-miniprojekti-boilerplate.ext.okd-cs-test-0.k8s.cs.helsinki.fi
