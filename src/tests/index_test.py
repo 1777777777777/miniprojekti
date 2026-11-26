@@ -22,7 +22,7 @@ class IndexRouteTestCase(unittest.TestCase):
     def _seed_and_get_martin_id(self):
         seed_db()
         return db.session.execute(
-            text("SELECT id FROM book_references WHERE key = 'Martin08'")
+            text("SELECT id FROM reference_items WHERE key = 'Martin08'")
         ).scalar()
 
     def tearDown(self):
@@ -203,7 +203,7 @@ class TestIndexRoutes(IndexRouteTestCase):
         self.assertNotIn(b"<dt>Publisher</dt>", response.data)
 
         row = db.session.execute(
-            text("SELECT * FROM article_references WHERE key = 'Dijkstra68'")
+            text("SELECT * FROM reference_items WHERE key = 'Dijkstra68'")
         ).mappings().first()
         self.assertIsNotNone(row)
         self.assertEqual(row["author"], "Edsger W. Dijkstra")
@@ -213,7 +213,7 @@ class TestIndexRoutes(IndexRouteTestCase):
         self.assertEqual(row["pages"], "147-148")
 
         book_count = db.session.execute(
-            text("SELECT COUNT(*) FROM book_references")
+            text("SELECT COUNT(*) FROM reference_items WHERE ref_type = 'book'")
         ).scalar()
         self.assertEqual(book_count, 0)
 
@@ -232,7 +232,7 @@ class TestIndexRoutes(IndexRouteTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn(b"All required fields must be filled.", response.data)
         article_count = db.session.execute(
-            text("SELECT COUNT(*) FROM article_references")
+            text("SELECT COUNT(*) FROM reference_items WHERE ref_type = 'article'")
         ).scalar()
         self.assertEqual(article_count, 0)
 
@@ -261,7 +261,7 @@ class TestIndexRoutes(IndexRouteTestCase):
             },
         )
         ref_id = db.session.execute(
-            text("SELECT id FROM article_references WHERE key = 'Dijkstra68'")
+            text("SELECT id FROM reference_items WHERE key = 'Dijkstra68'")
         ).scalar()
 
         get_response = self.client.get(f"/references/article/{ref_id}/edit")
@@ -305,7 +305,7 @@ class TestReferenceMutationRoutes(IndexRouteTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn(b"Publication year is too large.", response.data)
         count = db.session.execute(
-            text("SELECT COUNT(*) FROM book_references")
+            text("SELECT COUNT(*) FROM reference_items")
         ).scalar()
         self.assertEqual(count, 0)
 
@@ -327,7 +327,7 @@ class TestReferenceMutationRoutes(IndexRouteTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn(b"Publication year is too large.", response.data)
         year = db.session.execute(
-            text("SELECT year FROM book_references WHERE id = :id"),
+            text("SELECT year FROM reference_items WHERE id = :id"),
             {"id": ref_id},
         ).scalar()
         self.assertEqual(year, 2008)
@@ -335,7 +335,7 @@ class TestReferenceMutationRoutes(IndexRouteTestCase):
     def test_delete_reference_removes_book_and_redirects(self):
         seed_db()
         ref_id = db.session.execute(
-            text("SELECT id FROM book_references WHERE key = 'Martin08'")
+            text("SELECT id FROM reference_items WHERE key = 'Martin08'")
         ).scalar()
 
         response = self.client.post(
@@ -346,7 +346,7 @@ class TestReferenceMutationRoutes(IndexRouteTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotIn(b"Martin08", response.data)
         row = db.session.execute(
-            text("SELECT * FROM book_references WHERE id = :id"),
+            text("SELECT * FROM reference_items WHERE id = :id"),
             {"id": ref_id},
         ).first()
         self.assertIsNone(row)
@@ -363,7 +363,7 @@ class TestReferenceMutationRoutes(IndexRouteTestCase):
         ref_id = self._seed_and_get_martin_id()
         db.session.execute(text("""
             CREATE TRIGGER prevent_book_reference_delete
-            BEFORE DELETE ON book_references
+            BEFORE DELETE ON reference_items
             BEGIN
                 SELECT RAISE(ABORT, 'delete not allowed');
             END
@@ -383,7 +383,7 @@ class TestReferenceMutationRoutes(IndexRouteTestCase):
             )
             self.assertIn(b"Martin08", response.data)
             row = db.session.execute(
-                text("SELECT * FROM book_references WHERE id = :id"),
+                text("SELECT * FROM reference_items WHERE id = :id"),
                 {"id": ref_id},
             ).first()
             self.assertIsNotNone(row)
@@ -393,7 +393,7 @@ class TestReferenceMutationRoutes(IndexRouteTestCase):
             db.session.commit()
 
     def test_delete_reference_shows_error_when_reference_list_cannot_load(self):
-        db.session.execute(text("DROP TABLE inproceedings_references"))
+        db.session.execute(text("DROP TABLE reference_items"))
         db.session.commit()
 
         try:

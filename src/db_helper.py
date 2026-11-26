@@ -3,6 +3,7 @@ import os
 from sqlalchemy import text
 
 from config import app, db
+from repositories.folder_repository import get_or_create_default_folder
 
 
 def tables():
@@ -17,11 +18,10 @@ def tables():
 
 
 def reset_db():
-    """Clears all reference rows from the database."""
-    print("Clearing reference tables")
-    db.session.execute(text("DELETE FROM book_references"))
-    db.session.execute(text("DELETE FROM article_references"))
-    db.session.execute(text("DELETE FROM inproceedings_references"))
+    """Clears all reference and folder rows from the database."""
+    print("Clearing database tables")
+    db.session.execute(text("DELETE FROM reference_items"))
+    db.session.execute(text("DELETE FROM folders"))
     db.session.commit()
 
 
@@ -49,20 +49,22 @@ def setup_db():
 
 
 def seed_db():
-    """Inserts example references if the book_references table is empty."""
+    """Inserts example references into the default folder if none exist."""
     result = db.session.execute(
-        text("SELECT COUNT(*) FROM book_references")
+        text("SELECT COUNT(*) FROM reference_items")
     )
     count = result.scalar()
 
     if count == 0:
+        folder = get_or_create_default_folder()
         db.session.execute(text("""
-            INSERT INTO book_references
-            (key, title, author, year, publisher, pages)
+            INSERT INTO reference_items
+                (folder_id, ref_type, key, title, author, year, publisher, pages)
             VALUES
-                (:key, :title, :author, :year, :publisher, :pages)
+                (:folder_id, 'book', :key, :title, :author, :year, :publisher, :pages)
         """), [
             {
+                "folder_id": folder["id"],
                 "key": "Martin08",
                 "title": "Clean Code: A Handbook of Agile Software Craftsmanship",
                 "author": "Robert C. Martin",
@@ -71,6 +73,7 @@ def seed_db():
                 "pages": "42",
             },
             {
+                "folder_id": folder["id"],
                 "key": "Gamma94",
                 "title": "Design Patterns: Elements of Reusable Object-Oriented Software",
                 "author": "Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides",
@@ -79,6 +82,7 @@ def seed_db():
                 "pages": "",
             },
             {
+                "folder_id": folder["id"],
                 "key": "Fowler99",
                 "title": "Refactoring: Improving the Design of Existing Code",
                 "author": "Martin Fowler",
@@ -87,6 +91,7 @@ def seed_db():
                 "pages": "42–48",
             },
             {
+                "folder_id": folder["id"],
                 "key": "Thomas19",
                 "title": "The Pragmatic Programmer",
                 "author": "David Thomas and Andrew Hunt",

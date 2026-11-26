@@ -21,16 +21,16 @@ class TestDbHelper(unittest.TestCase):
         db.session.remove()
         self.ctx.pop()
 
-    def test_setup_db_creates_book_references_table(self):
-        self.assertIn("book_references", tables())
+    def test_setup_db_creates_folders_table(self):
+        self.assertIn("folders", tables())
 
-    def test_setup_db_creates_article_references_table(self):
-        self.assertIn("article_references", tables())
+    def test_setup_db_creates_reference_items_table(self):
+        self.assertIn("reference_items", tables())
 
     def test_seed_db_inserts_example_references(self):
         seed_db()
         count = db.session.execute(
-            text("SELECT COUNT(*) FROM book_references")
+            text("SELECT COUNT(*) FROM reference_items")
         ).scalar()
         self.assertEqual(count, 4)
 
@@ -38,25 +38,18 @@ class TestDbHelper(unittest.TestCase):
         seed_db()
         seed_db()
         count = db.session.execute(
-            text("SELECT COUNT(*) FROM book_references")
+            text("SELECT COUNT(*) FROM reference_items")
         ).scalar()
         self.assertEqual(count, 4)
 
-    def test_reset_db_clears_references(self):
+    def test_reset_db_clears_references_and_folders(self):
         seed_db()
-        db.session.execute(
-            text(
-                "INSERT INTO article_references (key, title, author, year, journal) "
-                "VALUES ('Dijkstra68', 'Go To Statement', 'Dijkstra', 1968, 'CACM')"
-            )
-        )
-        db.session.commit()
         reset_db()
-        book_count = db.session.execute(
-            text("SELECT COUNT(*) FROM book_references")
+        ref_count = db.session.execute(
+            text("SELECT COUNT(*) FROM reference_items")
         ).scalar()
-        article_count = db.session.execute(
-            text("SELECT COUNT(*) FROM article_references")
+        folder_count = db.session.execute(
+            text("SELECT COUNT(*) FROM folders")
         ).scalar()
-        self.assertEqual(book_count, 0)
-        self.assertEqual(article_count, 0)
+        self.assertEqual(ref_count, 0)
+        self.assertEqual(folder_count, 0)

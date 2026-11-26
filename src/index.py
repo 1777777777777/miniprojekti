@@ -1,13 +1,15 @@
 from os import getenv
 
 from flask import abort, jsonify, redirect, render_template, request, url_for
-from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from config import app, db
 from db_helper import reset_db, seed_db
+from repositories.folder_repository import get_or_create_default_folder
 from repositories.reference_repository import (
+    create_reference,
     get_reference,
+    get_references,
     remove_reference,
     update_reference,
 )
@@ -55,42 +57,11 @@ def validate_reference_form(ref_type, filled):
     return None
 
 
-def load_references():
-    result = db.session.execute(text("""
-        SELECT
-            id, key, title, author, year,
-            publisher AS publication,
-            pages,
-            'book' AS ref_type
-        FROM book_references
-
-        UNION ALL
-
-        SELECT
-            id, key, title, author, year,
-            journal AS publication,
-            pages,
-            'article' AS ref_type
-        FROM article_references
-
-        UNION ALL
-
-        SELECT
-            id, key, title, author, year,
-            booktitle AS publication,
-            pages,
-            'inproceedings' AS ref_type
-        FROM inproceedings_references
-    """))
-
-    return result.fetchall()
-
-
 @app.get("/")
 def index():
     return render_template(
         "index.html",
-        references=load_references(),
+        references=get_references(),
         error=None,
     )
 
@@ -126,38 +97,8 @@ def new_reference():
         ), 400
 
     try:
-        if ref_type == "book":
-            db.session.execute(
-                text("""
-                    INSERT INTO book_references
-                        (key, author, title, year, publisher, pages)
-                    VALUES
-                        (:key, :author, :title, :year, :publisher, :pages)
-                """),
-                {**filled, "year": int(filled["year"])},
-            )
-        elif ref_type == "article":
-            db.session.execute(
-                text("""
-                    INSERT INTO article_references
-                        (key, author, title, year, journal, pages)
-                    VALUES
-                        (:key, :author, :title, :year, :journal, :pages)
-                """),
-                {**filled, "year": int(filled["year"])},
-            )
-        elif ref_type == "inproceedings":
-            db.session.execute(
-                text("""
-                    INSERT INTO inproceedings_references
-                        (key, author, title, year, booktitle, pages)
-                    VALUES
-                        (:key, :author, :title, :year, :booktitle, :pages)
-                """),
-                {**filled, "year": int(filled["year"])},
-            )
-
-        db.session.commit()
+        folder = get_or_create_default_folder()
+        create_reference(ref_type, {**filled, "year": int(filled["year"])}, folder["id"])
         return redirect(url_for("index"))
 
     except IntegrityError:
@@ -217,7 +158,7 @@ def delete_reference(ref_type, ref_id):
         app.logger.exception("Could not delete reference %s/%s", ref_type, ref_id)
         db.session.rollback()
         try:
-            references = load_references()
+            references = get_references()
         except SQLAlchemyError:
             db.session.rollback()
             references = None

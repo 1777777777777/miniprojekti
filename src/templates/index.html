@@ -15,9 +15,11 @@
                 <div class="folder-row"><span aria-hidden="true">📁</span> My refs</div>
             </div>
         </aside>
+
         <div class="resizer" role="separator" tabindex="0" aria-label="Resize Folders panel"
              aria-controls="folders" aria-orientation="vertical" aria-valuemin="160"
              aria-valuemax="480" aria-valuenow="240"></div>
+
         <main class="references-panel">
             <header class="references-header">
                 {% if references is none %}
@@ -27,9 +29,11 @@
                 {% endif %}
                 <a class="add-reference" href="{{ url_for('new_reference') }}">+ Add reference</a>
             </header>
+
             {% if error %}
                 <p class="form-status" role="alert">{{ error }}</p>
             {% endif %}
+
             {% if references %}
                 <ul class="reference-list">
                    {% for reference in references %}
@@ -45,11 +49,11 @@
                <div><dt>Year</dt><dd>{{ reference.year }}</dd></div>
             
                {% if reference.ref_type == 'book' %}
-               <div><dt>Publisher</dt><dd>{{ reference.publication }}</dd></div>
+               <div><dt>Publisher</dt><dd>{{ reference.publisher }}</dd></div>
                {% elif reference.ref_type == 'article' %}
-               <div><dt>Journal</dt><dd>{{ reference.publication }}</dd></div>
+               <div><dt>Journal</dt><dd>{{ reference.journal }}</dd></div>
                {% elif reference.ref_type == 'inproceedings' %}
-               <div><dt>Proceedings</dt><dd>{{ reference.publication }}</dd></div>
+               <div><dt>Proceedings</dt><dd>{{ reference.booktitle }}</dd></div>
                {% endif %}
             
                {% if reference.pages %}
@@ -72,8 +76,6 @@
        </li>
        {% endfor %}
                 </ul>
-
-
             {% elif references is none %}
             <p class="empty-message">Could not load references. <a href="{{ url_for('index') }}">Retry loading references</a>.</p>
             {% else %}
